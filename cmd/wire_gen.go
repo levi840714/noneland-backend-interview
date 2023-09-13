@@ -12,6 +12,7 @@ import (
 	"noneland/backend/interview/internal/pkg/db"
 	"noneland/backend/interview/internal/repo"
 	"noneland/backend/interview/internal/router"
+	"noneland/backend/interview/internal/rpc"
 )
 
 // Injectors from wire.go:
@@ -19,7 +20,8 @@ import (
 func InitServer() *Server {
 	engine := NewGinEngine()
 	gormDB := db.InitGorm()
-	riskRepo := repo.NewRiskRepo(gormDB)
+	rpcClient := rpc.NewXXExchangeClient()
+	riskRepo := repo.NewRiskRepo(gormDB, rpcClient)
 	riskUseCase := biz.NewRiskUseCase(riskRepo)
 	riskController := api.NewRiskController(riskUseCase)
 	routerRouter := router.NewRouter(riskController)

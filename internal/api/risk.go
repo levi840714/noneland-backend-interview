@@ -29,3 +29,16 @@ func (r *RiskController) RiskBalance(c *gin.Context) {
 
 	jsonResponse(c, riskBalance)
 }
+
+func (r *RiskController) TransferRecords(c *gin.Context) {
+	ctx := context.Background()
+
+	records, err := r.riskUseCase.GetTransferRecords(ctx)
+	if err != nil {
+		logger.Zap().Errorf("get transfer records error: %s", err)
+		internalError(c)
+		return
+	}
+
+	jsonResponse(c, records)
+}

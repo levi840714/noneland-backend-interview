@@ -10,13 +10,17 @@ type (
 	RiskUseCase interface {
 		// get all balance from xx exchange
 		GetRiskBalance(ctx context.Context) (*entity.RiskBalance, error)
+		// get all transfer records from xx exchange
+		GetTransferRecords(ctx context.Context) ([]*entity.TransferRecord, error)
 	}
 
 	RiskRepo interface {
-		// get spot balance from xx exchang
+		// get spot balance from xx exchange
 		GetSpotBalance() (riskBalance *model.RiskBalance, err error)
-		// get futures balance from xx exchang
+		// get futures balance from xx exchange
 		GetFuturesBalance() (riskBalance *model.RiskBalance, err error)
+		// get transfer records from xx exchange
+		GetTransferRecords() (records *model.TransferRecords, err error)
 	}
 )
 
@@ -47,4 +51,13 @@ func (u *riskUseCase) GetRiskBalance(ctx context.Context) (*entity.RiskBalance, 
 	}
 
 	return data, nil
+}
+
+func (u *riskUseCase) GetTransferRecords(ctx context.Context) ([]*entity.TransferRecord, error) {
+	transferRecords, err := u.riskRepo.GetTransferRecords()
+	if err != nil {
+		return nil, err
+	}
+
+	return entity.RecordsModelToEntity(transferRecords), nil
 }
