@@ -10,10 +10,10 @@ func HelloHandler(c *gin.Context) {
 	// use repo sample
 	//repo, err := di.NewRepo()
 	//if err != nil {
-	//	errResponse(c)
+	//	internalError(c)
 	//	return
 	//}
 	//users, err := repo.GetUsers()
 
-	c.JSON(http.StatusOK, okResponse{OK: true})
+	c.JSON(http.StatusOK, baseResponse{Code: 200})
 }

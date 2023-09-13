@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func NewDb() *gorm.DB {
+func InitGorm() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
 		Logger: logger.Discard,
 	})
