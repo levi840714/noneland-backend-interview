@@ -2,6 +2,7 @@ package biz
 
 import (
 	"golang.org/x/net/context"
+	"golang.org/x/sync/errgroup"
 	"noneland/backend/interview/internal/entity"
 	"noneland/backend/interview/internal/repo/model"
 )
@@ -35,13 +36,23 @@ func NewRiskUseCase(riskRepo RiskRepo) RiskUseCase {
 }
 
 func (u *riskUseCase) GetRiskBalance(ctx context.Context) (*entity.RiskBalance, error) {
-	spotBalance, err := u.riskRepo.GetSpotBalance()
-	if err != nil {
-		return nil, err
-	}
+	var (
+		spotBalance, futuresBalance *model.RiskBalance
+		err                         error
+	)
 
-	futuresBalance, err := u.riskRepo.GetFuturesBalance()
-	if err != nil {
+	eg := errgroup.Group{}
+	eg.Go(func() error {
+		spotBalance, err = u.riskRepo.GetSpotBalance()
+		return err
+	})
+
+	eg.Go(func() error {
+		futuresBalance, err = u.riskRepo.GetFuturesBalance()
+		return err
+	})
+
+	if err = eg.Wait(); err != nil {
 		return nil, err
 	}
 
